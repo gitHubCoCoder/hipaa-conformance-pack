@@ -97,7 +97,7 @@ Parameters:
   S3AccountLevelPublicAccessBlocksPeriodicParamRestrictPublicBuckets:
     Default: "true"
     Type: String
-  S3BucketLevelPublicAccessProhibitedExcludedPublicBuckets:
+  SBLPAPExcludedPublicBuckets:
     Default: ""
     Type: String
 Resources:
@@ -1219,8 +1219,8 @@ Resources:
       InputParameters:
         routeTableIds:
           Fn::If:
-            - s3BucketLevelPublicAccessProhibitedExcludedPublicBuckets
-            - Ref: S3BucketLevelPublicAccessProhibitedExcludedPublicBuckets
+            - sBLPAPExcludedPublicBuckets
+            - Ref: SBLPAPExcludedPublicBuckets
             - Ref: AWS::NoValue
       Scope:
         ComplianceResourceTypes:
@@ -1602,8 +1602,8 @@ Conditions:
       - Fn::Equals:
           - ""
           - Ref: S3AccountLevelPublicAccessBlocksPeriodicParamRestrictPublicBuckets
-  s3BucketLevelPublicAccessProhibitedExcludedPublicBuckets:
+  sBLPAPExcludedPublicBuckets:
     Fn::Not:
       - Fn::Equals:
           - ""
-          - Ref: S3BucketLevelPublicAccessProhibitedExcludedPublicBuckets
+          - Ref: SBLPAPExcludedPublicBuckets
