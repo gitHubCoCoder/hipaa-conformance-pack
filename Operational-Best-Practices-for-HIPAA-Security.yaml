@@ -55,11 +55,10 @@ Parameters:
   IamUserUnusedCredentialsCheckParamMaxCredentialUsageAge:
     Default: "90"
     Type: String
-  InternetGatewayAuthorizedVpcOnlyParamAuthorizedVpcIds:
+  IGAVOPAVI:
     Default: ""
     Type: String
-  NURTIParamRouteTableIds:
-    Default: ""
+  NURTIRTI:
     Type: String
   RedshiftClusterConfigurationCheckParamClusterDbEncrypted:
     Default: "true"
@@ -97,8 +96,7 @@ Parameters:
   S3AccountLevelPublicAccessBlocksPeriodicParamRestrictPublicBuckets:
     Default: "true"
     Type: String
-  SBLPAPExcludedPublicBuckets:
-    Default: ""
+  SBLPAPEPB:
     Type: String
 Resources:
   AccessKeysRotated:
@@ -835,8 +833,8 @@ Resources:
       InputParameters:
         AuthorizedVpcIds:
           Fn::If:
-            - internetGatewayAuthorizedVpcOnlyParamAuthorizedVpcIds
-            - Ref: InternetGatewayAuthorizedVpcOnlyParamAuthorizedVpcIds
+            - iGAVOPAVI
+            - Ref: IGAVOPAVI
             - Ref: AWS::NoValue
     Type: AWS::Config::ConfigRule
   KinesisStreamEncrypted:
@@ -888,10 +886,7 @@ Resources:
       ConfigRuleName: no-unrestricted-route-to-igw
       InputParameters:
         routeTableIds:
-          Fn::If:
-            - nURTIParamRouteTableIds
-            - Ref: NURTIParamRouteTableIds
-            - Ref: AWS::NoValue
+          Ref: NURTIRTI
       Scope:
         ComplianceResourceTypes:
           - AWS::EC2::RouteTable
@@ -1218,10 +1213,7 @@ Resources:
       ConfigRuleName: s3-bucket-level-public-access-prohibited
       InputParameters:
         routeTableIds:
-          Fn::If:
-            - sBLPAPExcludedPublicBuckets
-            - Ref: SBLPAPExcludedPublicBuckets
-            - Ref: AWS::NoValue
+          Ref: SBLPAPEPB
       Scope:
         ComplianceResourceTypes:
           - AWS::S3::Bucket
@@ -1532,16 +1524,11 @@ Conditions:
       - Fn::Equals:
           - ""
           - Ref: IamUserUnusedCredentialsCheckParamMaxCredentialUsageAge
-  internetGatewayAuthorizedVpcOnlyParamAuthorizedVpcIds:
+  iGAVOPAVI:
     Fn::Not:
       - Fn::Equals:
           - ""
-          - Ref: InternetGatewayAuthorizedVpcOnlyParamAuthorizedVpcIds
-  nURTIParamRouteTableIds:
-    Fn::Not:
-      - Fn::Equals:
-          - ""
-          - Ref: NURTIParamRouteTableIds
+          - Ref: IGAVOPAVI
   redshiftClusterConfigurationCheckParamClusterDbEncrypted:
     Fn::Not:
       - Fn::Equals:
@@ -1602,8 +1589,3 @@ Conditions:
       - Fn::Equals:
           - ""
           - Ref: S3AccountLevelPublicAccessBlocksPeriodicParamRestrictPublicBuckets
-  sBLPAPExcludedPublicBuckets:
-    Fn::Not:
-      - Fn::Equals:
-          - ""
-          - Ref: SBLPAPExcludedPublicBuckets
