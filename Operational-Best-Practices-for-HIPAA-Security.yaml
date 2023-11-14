@@ -58,7 +58,7 @@ Parameters:
   InternetGatewayAuthorizedVpcOnlyParamAuthorizedVpcIds:
     Default: ""
     Type: String
-  NoUnrestrictedRouteToIgwParamRouteTableIds:
+  NURTIParamRouteTableIds:
     Default: ""
     Type: String
   RedshiftClusterConfigurationCheckParamClusterDbEncrypted:
@@ -889,8 +889,8 @@ Resources:
       InputParameters:
         routeTableIds:
           Fn::If:
-            - noUnrestrictedRouteToIgwParamRouteTableIds
-            - Ref: NoUnrestrictedRouteToIgwParamRouteTableIds
+            - nURTIParamRouteTableIds
+            - Ref: NURTIParamRouteTableIds
             - Ref: AWS::NoValue
       Scope:
         ComplianceResourceTypes:
@@ -1537,11 +1537,11 @@ Conditions:
       - Fn::Equals:
           - ""
           - Ref: InternetGatewayAuthorizedVpcOnlyParamAuthorizedVpcIds
-  noUnrestrictedRouteToIgwParamRouteTableIds:
+  nURTIParamRouteTableIds:
     Fn::Not:
       - Fn::Equals:
           - ""
-          - Ref: NoUnrestrictedRouteToIgwParamRouteTableIds
+          - Ref: NURTIParamRouteTableIds
   redshiftClusterConfigurationCheckParamClusterDbEncrypted:
     Fn::Not:
       - Fn::Equals:
